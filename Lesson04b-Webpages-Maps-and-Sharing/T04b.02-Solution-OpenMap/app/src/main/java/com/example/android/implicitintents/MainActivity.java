@@ -18,6 +18,7 @@ package com.example.android.implicitintents;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.ShareCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Toast;
@@ -49,12 +50,12 @@ public class MainActivity extends AppCompatActivity {
      */
     public void onClickOpenAddressButton(View v) {
         // COMPLETED (5) Store an address in a String
-        String addressString = "1600 Amphitheatre Parkway, CA";
+        String addressString = "Văn hội, bắc từ liêm, Hanoi Vietnam";
 
         // COMPLETED (6) Use Uri.Builder with the appropriate scheme and query to form the Uri for the address
         Uri.Builder builder = new Uri.Builder();
         builder.scheme("geo")
-                .path("0,0")
+                .appendPath("0,0")
                 .appendQueryParameter("q", addressString);
         Uri addressUri = builder.build();
 
@@ -115,6 +116,7 @@ public class MainActivity extends AppCompatActivity {
         if (intent.resolveActivity(getPackageManager()) != null) {
             startActivity(intent);
         }
+        ShareCompat
     }
 
     // COMPLETED (1) Create a method called showMap with a Uri as the single parameter

@@ -15,4 +15,10 @@
 
     <!-- Value in SharedPreferences for green color option -->
     <string name="pref_color_green_value" translatable="false">green</string>
+
+    <string name="show_bass_key">show_bass</string>
+    <string name="show_mid_key">show_mid</string>
+    <string name="show_treble_key">show_treble</string>
+    <string name="min_size_scale_key">min_size_scale</string>
+    <string name="set_color_key">set_color</string>
 </resources>

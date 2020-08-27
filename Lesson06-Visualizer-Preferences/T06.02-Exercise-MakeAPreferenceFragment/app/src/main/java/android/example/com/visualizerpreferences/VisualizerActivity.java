@@ -47,6 +47,7 @@ public class VisualizerActivity extends AppCompatActivity {
     }
 
     private void defaultSetup() {
+
         mVisualizerView.setShowBass(true);
         mVisualizerView.setShowMid(true);
         mVisualizerView.setShowTreble(true);

@@ -66,7 +66,7 @@ public class NotificationUtils {
                     context.getString(R.string.main_notification_channel_name),
                     NotificationManager.IMPORTANCE_HIGH);
             notificationManager.createNotificationChannel(mChannel);
-            }
+        }
         // COMPLETED (10) In the remindUserBecauseCharging method use NotificationCompat.Builder to create a notification
         // that:
         // - has a color of R.color.colorPrimary - use ContextCompat.getColor to get a compatible color

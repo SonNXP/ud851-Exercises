@@ -21,6 +21,7 @@ import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -38,6 +39,8 @@ public class MainActivity extends AppCompatActivity implements
 
     /* A constant to save and restore the URL that is being displayed */
     private static final String SEARCH_QUERY_URL_EXTRA = "query";
+
+    private static String mGithubJson;
 
     /*
      * This number will uniquely identify our Loader and is chosen arbitrarily. You can change this
@@ -165,8 +168,9 @@ public class MainActivity extends AppCompatActivity implements
     public Loader<String> onCreateLoader(int id, final Bundle args) {
         return new AsyncTaskLoader<String>(this) {
 
+            private static final String TAG = "onCreateLoader";
             // TODO (1) Create a String member variable called mGithubJson that will store the raw JSON
-
+//            String mGithubJson;
             @Override
             protected void onStartLoading() {
 
@@ -181,9 +185,16 @@ public class MainActivity extends AppCompatActivity implements
                  * When we initially begin loading in the background, we want to display the
                  * loading indicator to the user
                  */
-                mLoadingIndicator.setVisibility(View.VISIBLE);
 
-                forceLoad();
+                if (mGithubJson != null) {
+                    deliverResult(mGithubJson);
+                    Log.d(TAG, "The AsyncTask is loaded and result is: " + mGithubJson);
+                }
+                else {
+                    mLoadingIndicator.setVisibility(View.VISIBLE);
+                    Log.d(TAG, "The AsyncTask new");
+                    forceLoad();
+                }
             }
 
             @Override
@@ -206,6 +217,13 @@ public class MainActivity extends AppCompatActivity implements
                     e.printStackTrace();
                     return null;
                 }
+            }
+
+            @Override
+            public void deliverResult(String data) {
+                mGithubJson = data;
+                Log.d(TAG, "The AsyncTask is loaded: " + mGithubJson);
+                super.deliverResult(data);
             }
 
             // TODO (3) Override deliverResult and store the data in mGithubJson

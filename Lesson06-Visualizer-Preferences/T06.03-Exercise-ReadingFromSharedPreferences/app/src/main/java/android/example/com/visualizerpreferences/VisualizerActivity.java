@@ -18,6 +18,7 @@ package android.example.com.visualizerpreferences;
 
 import android.Manifest;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.example.com.visualizerpreferences.AudioVisuals.AudioInputReader;
 import android.example.com.visualizerpreferences.AudioVisuals.VisualizerView;
@@ -26,35 +27,49 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-public class VisualizerActivity extends AppCompatActivity {
+import static android.example.com.visualizerpreferences.R.*;
+
+public class VisualizerActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     private static final int MY_PERMISSION_RECORD_AUDIO_REQUEST_CODE = 88;
     private VisualizerView mVisualizerView;
     private AudioInputReader mAudioInputReader;
+    private SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_visualizer);
-        mVisualizerView = (VisualizerView) findViewById(R.id.activity_visualizer);
-        defaultSetup();
+        setContentView(layout.activity_visualizer);
+        mVisualizerView = (VisualizerView) findViewById(id.activity_visualizer);
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        setupSharedPreferences(sharedPreferences);
+        registerPreferencesListener();
         setupPermissions();
     }
 
+    private void registerPreferencesListener() {
+        sharedPreferences.registerOnSharedPreferenceChangeListener(this);
+    }
+
+    private void unregisterPreferencesListener() {
+        sharedPreferences.unregisterOnSharedPreferenceChangeListener(this);
+    }
     // TODO (1) Change the name of default setup to setupSharedPreferences
-    private void defaultSetup() {
+    private void setupSharedPreferences(SharedPreferences sharedPreferences) {
         // TODO (2) Get a reference to the default shared preferences from the PreferenceManager class
         // TODO (3) Get the value of the show_bass checkbox preference and use it to call setShowBass
-        mVisualizerView.setShowBass(true);
+
+        mVisualizerView.setShowBass(sharedPreferences.getBoolean(getString(string.show_bass_key), false));
         mVisualizerView.setShowMid(true);
         mVisualizerView.setShowTreble(true);
         mVisualizerView.setMinSizeScale(1);
-        mVisualizerView.setColor(getString(R.string.pref_color_red_value));
+        mVisualizerView.setColor(getString(string.pref_color_red_value));
     }
 
     /**
@@ -104,7 +119,13 @@ public class VisualizerActivity extends AppCompatActivity {
             mAudioInputReader.restart();
         }
     }
-    
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterPreferencesListener();
+    }
+
     /**
      * App Permissions for Audio
      **/
@@ -144,5 +165,10 @@ public class VisualizerActivity extends AppCompatActivity {
             // Other permissions could go down here
 
         }
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        setupSharedPreferences(sharedPreferences);
     }
 }

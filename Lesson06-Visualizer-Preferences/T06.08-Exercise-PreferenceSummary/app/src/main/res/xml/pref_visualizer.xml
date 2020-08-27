@@ -28,6 +28,13 @@
         android:entries="@array/pref_color_option_labels"
         android:entryValues="@array/pref_color_option_values"
         android:key="@string/pref_color_key"
+        android:summary="Test"
         android:title="@string/pref_color_label" />
+
+    <EditTextPreference
+        android:title="Min Size Scale"
+        android:defaultValue="1"
+        android:summary="1"
+        android:key="@string/min_size_scale_key" />
 
 </PreferenceScreen>

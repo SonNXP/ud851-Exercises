@@ -24,7 +24,9 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.Build;
+import android.provider.Settings;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationCompat.Action;
 import android.support.v4.content.ContextCompat;
@@ -81,7 +83,9 @@ public class NotificationUtils {
                 .setContentText(context.getString(R.string.charging_reminder_notification_body))
                 .setStyle(new NotificationCompat.BigTextStyle().bigText(
                         context.getString(R.string.charging_reminder_notification_body)))
-                .setDefaults(Notification.DEFAULT_VIBRATE)
+                .setVibrate(new long[] { 1000, 1000, 1000, 1000, 1000 })
+                .setSound(Settings.System.DEFAULT_RINGTONE_URI)
+                .setLights(Color.RED, 3000, 3000)
                 .setContentIntent(contentIntent(context))
                 .addAction(drinkWaterAction(context))
                 .addAction(ignoreReminderAction(context))

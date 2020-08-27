@@ -28,6 +28,7 @@ import com.example.android.todolist.database.AppDatabase;
 import com.example.android.todolist.database.TaskEntry;
 
 import java.util.Date;
+import java.util.concurrent.Executor;
 
 
 public class AddTaskActivity extends AppCompatActivity {
@@ -116,12 +117,21 @@ public class AddTaskActivity extends AppCompatActivity {
         Date date = new Date();
 
         // TODO (4) Make taskEntry final so it is visible inside the run method
-        TaskEntry taskEntry = new TaskEntry(description, priority, date);
+        final TaskEntry taskEntry = new TaskEntry(description, priority, date);
         // TODO (2) Get the diskIO Executor from the instance of AppExecutors and
         // call the diskIO execute method with a new Runnable and implement its run method
+        Executor executorDiskIO = AppExecutors.getInstance().diskIO();
+        executorDiskIO.execute(new Runnable() {
+            @Override
+            public void run() {
+                mDb.taskDao().insertTask(taskEntry);
+                finish();
+            }
+        });
+
         // TODO (3) Move the remaining logic inside the run method
-        mDb.taskDao().insertTask(taskEntry);
-        finish();
+
+//        finish();
     }
 
     /**

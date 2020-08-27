@@ -32,6 +32,7 @@ import com.example.android.todolist.database.TaskEntry;
 import java.util.List;
 
 import static android.support.v7.widget.DividerItemDecoration.VERTICAL;
+import static com.example.android.todolist.AddTaskActivity.EXTRA_TASK_ID;
 
 
 public class MainActivity extends AppCompatActivity implements TaskAdapter.ItemClickListener {
@@ -76,11 +77,18 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.ItemC
 
             // Called when a user swipes left or right on a ViewHolder
             @Override
-            public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
+            public void onSwiped(final RecyclerView.ViewHolder viewHolder, int swipeDir) {
                 // Here is where you'll implement swipe to delete
                 // TODO (1) Get the diskIO Executor from the instance of AppExecutors and
                 // call the diskIO execute method with a new Runnable and implement its run method
-
+                AppExecutors.getInstance().diskIO().execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        int pos = viewHolder.getAdapterPosition();
+                        mDb.taskDao().deleteTask(mAdapter.getTasks().get(pos));
+                        retrieveTasks();
+                    }
+                });
                 // TODO (3) get the position from the viewHolder parameter
                 // TODO (4) Call deleteTask in the taskDao with the task at that position
                 // TODO (6) Call retrieveTasks method to refresh the UI
@@ -106,15 +114,7 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.ItemC
         mDb = AppDatabase.getInstance(getApplicationContext());
     }
 
-    /**
-     * This method is called after this activity has been paused or restarted.
-     * Often, this is after new data has been inserted through an AddTaskActivity,
-     * so this re-queries the database data for any changes.
-     */
-    @Override
-    protected void onResume() {
-        super.onResume();
-        // TODO (5) Extract the logic to a retrieveTasks method so it can be reused
+    private void retrieveTasks() {
         AppExecutors.getInstance().diskIO().execute(new Runnable() {
             @Override
             public void run() {
@@ -131,8 +131,23 @@ public class MainActivity extends AppCompatActivity implements TaskAdapter.ItemC
         });
     }
 
+    /**
+     * This method is called after this activity has been paused or restarted.
+     * Often, this is after new data has been inserted through an AddTaskActivity,
+     * so this re-queries the database data for any changes.
+     */
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // TODO (5) Extract the logic to a retrieveTasks method so it can be reused
+        retrieveTasks();
+    }
+
     @Override
     public void onItemClickListener(int itemId) {
         // Launch AddTaskActivity adding the itemId as an extra in the intent
+        Intent addTaskIntent = new Intent(MainActivity.this, AddTaskActivity.class);
+        addTaskIntent.putExtra(EXTRA_TASK_ID, itemId);
+        startActivity(addTaskIntent);
     }
 }

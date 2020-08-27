@@ -1,9 +1,23 @@
 package com.example.android.background.utilities;
 
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.Build;
+
+import com.example.android.background.MainActivity;
+import com.example.android.background.R;
+
 /**
  * Utility class for creating hydration notifications
  */
 public class NotificationUtils {
+
+    final int CONTENT_INTENT_ID = 1000;
 
     // TODO (7) Create a method called remindUserBecauseCharging which takes a Context.
     // This method will create a notification for charging. It might be helpful
@@ -26,7 +40,10 @@ public class NotificationUtils {
         // set the notification's priority to PRIORITY_HIGH.
         // TODO (12) Trigger the notification by calling notify on the NotificationManager.
         // Pass in a unique ID of your choosing for the notification and notificationBuilder.build()
+    private void remindUserBecauseCharging(Context context) {
+        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
+    }
 
 
     // TODO (1) Create a helper method called contentIntent with a single parameter for a Context. It
@@ -41,13 +58,21 @@ public class NotificationUtils {
             //   when the notification is triggered
             // - Has the flag FLAG_UPDATE_CURRENT, so that if the intent is created again, keep the
             // intent but update the data
-
+    private PendingIntent contentIntent(Context context) {
+        Intent intent = new Intent(context, MainActivity.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, CONTENT_INTENT_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        return pendingIntent;
+    }
 
     // TODO (4) Create a helper method called largeIcon which takes in a Context as a parameter and
     // returns a Bitmap. This method is necessary to decode a bitmap needed for the notification.
         // TODO (5) Get a Resources object from the context.
         // TODO (6) Create and return a bitmap using BitmapFactory.decodeResource, passing in the
         // resources object and R.drawable.ic_local_drink_black_24px
-
+    private Bitmap largeIcon(Context context) {
+        Resources resources = context.getResources();
+        Bitmap largeIcon = BitmapFactory.decodeResource(resources, R.drawable.ic_local_drink_black_24px);
+        return largeIcon;
+    }
 
 }
